@@ -1,0 +1,8 @@
+services:
+  php:
+    image: php:8.2-apache
+    container_name: orders-api
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/var/www/html
