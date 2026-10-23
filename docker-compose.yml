@@ -1,8 +1,34 @@
 services:
   php:
-    image: php:8.2-apache
-    container_name: orders-api
+    build: .
+    container_name: orders-api-php
     ports:
       - "8080:80"
     volumes:
-      - ./public:/var/www/html
+      - .:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: orders
+      DB_PASS: orders
+      DB_NAME: orders
+
+  mysql:
+    image: mysql:8.0
+    container_name: orders-api-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: orders
+      MYSQL_USER: orders
+      MYSQL_PASSWORD: orders
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
